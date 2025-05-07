@@ -1,2 +1,2 @@
 # dcimsdk
-The customized DCIM SDK for Golang
+The customized DCIM SDK for Go.
