@@ -1,6 +1,7 @@
 package servers
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 
@@ -58,6 +59,11 @@ type (
 		BladeId           string             `json:"blade_id"`            // 刀片服务器架构id
 		BladeUnit         string             `json:"blade_unit"`          // 刀片单元容量
 	}
+	CreateResp struct {
+		Server  Server `json:"-"`
+		Success bool   `json:"success"`
+		Error   string `json:"error"`
+	}
 )
 
 func (r *CreateReq) Url() (url string)           { return "/api/admin/servers" }
@@ -65,8 +71,29 @@ func (r *CreateReq) Method() (method string)     { return http.MethodPost }
 func (r *CreateReq) Values() (values url.Values) { return }
 func (r *CreateReq) Body() (body any)            { return r }
 
+func (r CreateResp) Ok() (ok bool)    { return r.Success }
+func (r CreateResp) Err() (err error) { return errors.New(r.Error) }
+
 // Create 添加服务器
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5779927
-func Create(ctx *dcimsdk.Context, request *CreateReq) (resp dcimsdk.CreateUpdateResp, err error) {
-	return dcimsdk.Execute[*CreateReq, dcimsdk.CreateUpdateResp](ctx, request)
+func Create(ctx *dcimsdk.Context, request *CreateReq) (resp CreateResp, err error) {
+	resp0, err0 := dcimsdk.Execute[*CreateReq, dcimsdk.CreateUpdateResp](ctx, request)
+	if err0 != nil {
+		return CreateResp{Success: resp0.Success, Error: resp0.Error}, err0
+	}
+
+	resp1, err1 := dcimsdk.Execute[*ListReq, ListResp](ctx, &ListReq{Name: request.Name, Page: 1, PageSize: 10000})
+	if err0 != nil {
+		return CreateResp{Success: resp1.Success, Error: resp1.Error}, err1
+	}
+
+	resp.Success = true
+	for _, srv := range resp1.Server {
+		if srv.Name == request.Name {
+			resp.Server = srv
+			break
+		}
+	}
+
+	return
 }

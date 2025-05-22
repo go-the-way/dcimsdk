@@ -10,8 +10,9 @@ import (
 
 type (
 	ListReq struct {
-		Page     uint `url:"page"`
-		PageSize uint `url:"page_size"`
+		Name     string `url:"name"`
+		Page     uint   `url:"page"`
+		PageSize uint   `url:"page_size"`
 	}
 	ListResp struct {
 		Success bool     `json:"success"`
