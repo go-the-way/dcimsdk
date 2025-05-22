@@ -9,7 +9,7 @@ import (
 
 type DeleteReq struct{ Id uint }
 
-func (r *DeleteReq) Url() (url string)           { return fmt.Sprintf("/api/admin/hardware/%d", r.Id) }
+func (r *DeleteReq) Url() (url string)           { return fmt.Sprintf("/api/admin/datacenters/%d", r.Id) }
 func (r *DeleteReq) Method() (method string)     { return http.MethodDelete }
 func (r *DeleteReq) Values() (values url.Values) { return }
 func (r *DeleteReq) Body() (body any)            { return }
