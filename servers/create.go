@@ -77,14 +77,22 @@ func (r CreateResp) Err() (err error) { return errors.New(r.Error) }
 // Create 添加服务器
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5779927
 func Create(ctx *dcimsdk.Context, request *CreateReq) (resp CreateResp, err error) {
-	resp0, err0 := dcimsdk.Execute[*CreateReq, dcimsdk.CreateUpdateResp](ctx, request)
-	if err0 != nil {
-		return CreateResp{Success: resp0.Success, Error: resp0.Error}, err0
+	resp0, err0 := dcimsdk.Execute[*CreateReq, CreateResp](ctx, request)
+	if !resp0.Ok() {
+		return CreateResp{Error: resp0.Error}, err0
 	}
 
-	resp1, err1 := dcimsdk.Execute[*ListReq, ListResp](ctx, &ListReq{Name: request.Name, Page: 1, PageSize: 10000})
 	if err0 != nil {
-		return CreateResp{Success: resp1.Success, Error: resp1.Error}, err1
+		return CreateResp{Error: err0.Error()}, err0
+	}
+
+	resp1, err1 := List(ctx, &ListReq{Name: request.Name, Page: 1, PageSize: 10000})
+	if !resp1.Ok() {
+		return CreateResp{Error: resp1.Error}, err1
+	}
+
+	if err1 != nil {
+		return CreateResp{Error: err1.Error()}, err1
 	}
 
 	resp.Success = true
@@ -92,6 +100,15 @@ func Create(ctx *dcimsdk.Context, request *CreateReq) (resp CreateResp, err erro
 		if srv.Name == request.Name {
 			resp.Server = srv
 			break
+		}
+	}
+
+	srv := resp.Server
+	if srv.Id > 0 && len(srv.Switch) > 0 && srv.Switch[0].Id > 0 {
+		srv.Switch[0].Disabled = true
+		resp2, _ := Detail(ctx, &DetailReq{Id: srv.Id})
+		if srv0 := resp2.Server; srv0.Id > 0 && len(srv0.Switch) > 0 && !srv0.Switch[0].Disabled {
+			srv.Switch[0].Disabled = false
 		}
 	}
 

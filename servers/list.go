@@ -112,6 +112,7 @@ type (
 		PortId   uint     `json:"port_id"`   // 端口id
 		Switch   string   `json:"switch"`    // 交换机ip地址
 		IsLock   int      `json:"is_lock"`   // 锁定状态
+		Disabled bool     `json:"-"`
 	}
 )
 
