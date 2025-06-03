@@ -22,7 +22,7 @@ var (
 	cacheCtxID = map[uint]*Context{}
 	logger     = log.New(os.Stdout, "[dcimsdk executor] ", log.LstdFlags)
 	httpClient = &http.Client{
-		Timeout: time.Minute * 2,
+		Timeout: time.Second * 3,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
