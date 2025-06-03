@@ -21,17 +21,22 @@ var (
 	cacheCtx   = map[string]*Context{}
 	cacheCtxID = map[uint]*Context{}
 	logger     = log.New(os.Stdout, "[dcimsdk executor] ", log.LstdFlags)
-	httpClient = &http.Client{
-		Timeout: time.Second * 3,
+)
+
+func newOption() *Option { return new(Option).Timeout(time.Second * 5) }
+
+func newHttpClient(timeout time.Duration) *http.Client {
+	return &http.Client{
+		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
 			},
 		},
 	}
-)
+}
 
-func Execute[REQ Request, RESP any](ctx *Context, request REQ, transformer ...BodyTransformer) (resp RESP, err error) {
+func Execute[REQ Request, RESP any](ctx *Context, request REQ, optionFn ...OptionFunc) (resp RESP, err error) {
 	debug0 := os.Getenv("DCIM_SDK_DEBUG") == "T"
 	var (
 		body    io.Reader
@@ -42,6 +47,7 @@ func Execute[REQ Request, RESP any](ctx *Context, request REQ, transformer ...Bo
 		typeOf := reflect.TypeOf(b)
 		kind := typeOf.Kind()
 		switch kind {
+		default:
 		case reflect.String:
 			body = bytes.NewBufferString(b.(string))
 			if debug0 {
@@ -99,7 +105,13 @@ func Execute[REQ Request, RESP any](ctx *Context, request REQ, transformer ...Bo
 	if debug0 {
 		logger.Printf("execute req headers: %v\n", req.Header)
 	}
-	if rawResp, err = httpClient.Do(req); err != nil {
+
+	var opt = newOption()
+	if len(optionFn) > 0 && optionFn[0] != nil {
+		optionFn[0](opt)
+	}
+
+	if rawResp, err = newHttpClient(opt.timeout).Do(req); err != nil {
 		logger.Println("execute api err:", err)
 		return
 	}
@@ -107,13 +119,11 @@ func Execute[REQ Request, RESP any](ctx *Context, request REQ, transformer ...Bo
 	if err != nil && debug0 {
 		fmt.Println(err)
 	}
-	var bodyTransformer BodyTransformer
-	if len(transformer) > 0 {
-		bodyTransformer = transformer[0]
+
+	if transformer0 := opt.transformer; transformer0 != nil {
+		readAll = []byte(transformer0(string(readAll)))
 	}
-	if bodyTransformer != nil {
-		readAll = []byte(bodyTransformer(string(readAll)))
-	}
+
 	if debug0 {
 		readAllStr := string(readAll)
 		limit := 1024 * 100

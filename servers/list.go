@@ -127,5 +127,5 @@ func (r ListResp) Err() (err error) { return errors.New(r.Error) }
 // List 获取服务器列表
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5760736
 func List(ctx *dcimsdk.Context, request *ListReq) (resp ListResp, err error) {
-	return dcimsdk.Execute[*ListReq, ListResp](ctx, request, dcimsdk.IdTypeFixed)
+	return dcimsdk.Execute[*ListReq, ListResp](ctx, request, dcimsdk.IdTypeFixedOptFn)
 }

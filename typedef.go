@@ -3,6 +3,7 @@ package dcimsdk
 import (
 	"errors"
 	"net/url"
+	"time"
 )
 
 type (
@@ -25,8 +26,13 @@ type (
 		Response
 		ID() (id uint)
 	}
-	BodyTransformer func(inBody string) (outBody string)
-	OnlyIdType      struct {
+	Option struct {
+		timeout     time.Duration
+		transformer Transformer
+	}
+	Transformer func(inBody string) (outBody string)
+	OptionFunc  func(opt *Option)
+	OnlyIdType  struct {
 		Id uint `json:"id"`
 	}
 )
@@ -34,5 +40,8 @@ type (
 func (c CreateUpdateResp) ID() uint         { return c.Id }
 func (c CreateUpdateResp) Ok() (ok bool)    { return c.Success }
 func (c CreateUpdateResp) Err() (err error) { return errors.New(c.Error) }
+
+func (o *Option) Timeout(timeout time.Duration) *Option       { o.timeout = timeout; return o }
+func (o *Option) Transformer(transformer Transformer) *Option { o.transformer = transformer; return o }
 
 func NewOnlyIdType(id uint) OnlyIdType { return OnlyIdType{Id: id} }

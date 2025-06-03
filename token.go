@@ -38,7 +38,7 @@ func (ctx *Context) refreshToken() {
 	req, _ := http.NewRequest(http.MethodPost, ctx.BaseUrl+"/api/admin/login", bytes.NewBufferString(fmt.Sprintf("{\"key\":\"%s\",\"secret\":\"%s\"}", ctx.Key, ctx.Secret)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Admin-Access", "yes")
-	if resp, err := httpClient.Do(req); err != nil {
+	if resp, err := newHttpClient(time.Second * 5).Do(req); err != nil {
 		logger.Println("get token err:", err)
 	} else if resp.StatusCode != http.StatusOK {
 		logger.Println("get token not 200")

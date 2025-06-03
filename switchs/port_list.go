@@ -60,5 +60,5 @@ func (r PortListResp) Err() (err error) { return errors.New(r.Error) }
 // PortList 获取交换机端口列表
 // https://www.eolink.com/share/inside/XIPzIs/api/1389879/detail/5754666
 func PortList(ctx *dcimsdk.Context, request *PortListReq) (resp PortListResp, err error) {
-	return dcimsdk.Execute[*PortListReq, PortListResp](ctx, request, dcimsdk.DeviceTypeFixed)
+	return dcimsdk.Execute[*PortListReq, PortListResp](ctx, request, dcimsdk.DeviceTypeFixedOptFn)
 }
