@@ -1,6 +1,9 @@
 package dcimsdk
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 var (
 	replaceAllFunc                    = func(s, old, new0 string) string { return strings.ReplaceAll(s, old, new0) }
@@ -25,4 +28,11 @@ func OptionalId(resp IdResponse) (id uint) {
 		return resp.ID()
 	}
 	return
+}
+
+func OptionFn(timeout ...time.Duration) OptionFunc {
+	if len(timeout) > 0 && timeout[0] >= time.Second {
+		return func(opt *Option) { opt.Timeout(timeout[0]) }
+	}
+	return nil
 }
