@@ -23,7 +23,7 @@ var (
 	logger     = log.New(os.Stdout, "[dcimsdk executor] ", log.LstdFlags)
 )
 
-func newOption() *Option { return new(Option).Timeout(time.Second * 5) }
+func defaultOption() *Option { return new(Option).Timeout(time.Second * 60) }
 
 func newHttpClient(timeout time.Duration) *http.Client {
 	return &http.Client{
@@ -106,7 +106,7 @@ func Execute[REQ Request, RESP any](ctx *Context, request REQ, optionFn ...Optio
 		logger.Printf("execute req headers: %v\n", req.Header)
 	}
 
-	var opt = newOption()
+	var opt = defaultOption()
 	if len(optionFn) > 0 && optionFn[0] != nil {
 		optionFn[0](opt)
 	}
