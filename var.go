@@ -30,9 +30,11 @@ func OptionalId(resp IdResponse) (id uint) {
 	return
 }
 
-func OptionFn(timeout ...time.Duration) OptionFunc {
-	if len(timeout) > 0 && timeout[0] >= time.Second {
-		return func(opt *Option) { opt.Timeout(timeout[0]) }
+func Timeout(timeout time.Duration) OptionFunc { return func(opt *Option) { opt.timeout = timeout } }
+
+func JoinOptFunc(opt OptionFunc, opts ...OptionFunc) []OptionFunc {
+	if opt != nil {
+		opts = append(opts, opt)
 	}
-	return nil
+	return opts
 }

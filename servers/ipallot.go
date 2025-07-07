@@ -21,6 +21,6 @@ func (r *IpAllotReq) Body() (body any)            { return map[string]any{"addre
 
 // IpAllot 服务器分配ip
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5770392
-func IpAllot(ctx *dcimsdk.Context, request *IpAllotReq) (resp dcimsdk.CreateUpdateResp, err error) {
-	return dcimsdk.Execute[*IpAllotReq, dcimsdk.CreateUpdateResp](ctx, request)
+func IpAllot(ctx *dcimsdk.Context, request *IpAllotReq, opts ...dcimsdk.OptionFunc) (resp dcimsdk.CreateUpdateResp, err error) {
+	return dcimsdk.Execute[*IpAllotReq, dcimsdk.CreateUpdateResp](ctx, request, opts...)
 }

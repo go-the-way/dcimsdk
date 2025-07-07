@@ -36,7 +36,7 @@ func newHttpClient(timeout time.Duration) *http.Client {
 	}
 }
 
-func Execute[REQ Request, RESP any](ctx *Context, request REQ, optionFn ...OptionFunc) (resp RESP, err error) {
+func Execute[REQ Request, RESP any](ctx *Context, request REQ, opts ...OptionFunc) (resp RESP, err error) {
 	debug0 := os.Getenv("DCIM_SDK_DEBUG") == "T"
 	var (
 		body    io.Reader
@@ -106,9 +106,9 @@ func Execute[REQ Request, RESP any](ctx *Context, request REQ, optionFn ...Optio
 		logger.Printf("execute req headers: %v\n", req.Header)
 	}
 
-	var opt = defaultOption()
-	if len(optionFn) > 0 && optionFn[0] != nil {
-		optionFn[0](opt)
+	opt := defaultOption()
+	if len(opts) > 0 && opts[0] != nil {
+		opts[0](opt)
 	}
 
 	if rawResp, err = newHttpClient(opt.timeout).Do(req); err != nil {

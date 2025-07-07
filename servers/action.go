@@ -20,8 +20,8 @@ func (r *ActionReq) Body() (body any)            { return r }
 
 // action 操作
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5773835
-func action(ctx *dcimsdk.Context, request *ActionReq) (resp dcimsdk.CreateUpdateResp, err error) {
-	return dcimsdk.Execute[*ActionReq, dcimsdk.CreateUpdateResp](ctx, request)
+func action(ctx *dcimsdk.Context, request *ActionReq, opts ...dcimsdk.OptionFunc) (resp dcimsdk.CreateUpdateResp, err error) {
+	return dcimsdk.Execute[*ActionReq, dcimsdk.CreateUpdateResp](ctx, request, opts...)
 }
 
 // ActionPowerOn 开机

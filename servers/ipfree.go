@@ -21,6 +21,6 @@ func (r *IpFreeReq) Body() (body any)            { return map[string]any{"force"
 
 // IpFree 空闲ip
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5770222
-func IpFree(ctx *dcimsdk.Context, request *IpFreeReq) (resp dcimsdk.CreateUpdateResp, err error) {
-	return dcimsdk.Execute[*IpFreeReq, dcimsdk.CreateUpdateResp](ctx, request)
+func IpFree(ctx *dcimsdk.Context, request *IpFreeReq, opts ...dcimsdk.OptionFunc) (resp dcimsdk.CreateUpdateResp, err error) {
+	return dcimsdk.Execute[*IpFreeReq, dcimsdk.CreateUpdateResp](ctx, request, opts...)
 }

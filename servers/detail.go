@@ -137,6 +137,6 @@ func (r DetailResp) Err() (err error) { return errors.New(r.Error) }
 
 // Detail 获取服务器详情
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5768957
-func Detail(ctx *dcimsdk.Context, request *DetailReq) (resp DetailResp, err error) {
-	return dcimsdk.Execute[*DetailReq, DetailResp](ctx, request, dcimsdk.PowerStatusFixedOptFn)
+func Detail(ctx *dcimsdk.Context, request *DetailReq, opts ...dcimsdk.OptionFunc) (resp DetailResp, err error) {
+	return dcimsdk.Execute[*DetailReq, DetailResp](ctx, request, dcimsdk.JoinOptFunc(dcimsdk.PowerStatusFixedOptFn, opts...)...)
 }

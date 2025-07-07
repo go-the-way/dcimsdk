@@ -29,6 +29,6 @@ func (r PowerStatusResp) Err() (err error) { return errors.New(r.Error) }
 
 // PowerStatus 获取服务器电源状态
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5774112
-func PowerStatus(ctx *dcimsdk.Context, request *PowerStatusReq) (resp PowerStatusResp, err error) {
-	return dcimsdk.Execute[*PowerStatusReq, PowerStatusResp](ctx, request, dcimsdk.PowerStatusFixedOptFn)
+func PowerStatus(ctx *dcimsdk.Context, request *PowerStatusReq, opts ...dcimsdk.OptionFunc) (resp PowerStatusResp, err error) {
+	return dcimsdk.Execute[*PowerStatusReq, PowerStatusResp](ctx, request, dcimsdk.JoinOptFunc(dcimsdk.PowerStatusFixedOptFn, opts...)...)
 }

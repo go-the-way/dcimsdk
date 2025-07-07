@@ -21,8 +21,6 @@ func (r *MainIpReq) Body() (body any)            { return }
 
 // MainIp 设置主ip
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5770224
-func MainIp(ctx *dcimsdk.Context, request *MainIpReq) (resp dcimsdk.CreateUpdateResp, err error) {
-	return dcimsdk.Execute[*MainIpReq, dcimsdk.CreateUpdateResp](ctx, request)
+func MainIp(ctx *dcimsdk.Context, request *MainIpReq, opts ...dcimsdk.OptionFunc) (resp dcimsdk.CreateUpdateResp, err error) {
+	return dcimsdk.Execute[*MainIpReq, dcimsdk.CreateUpdateResp](ctx, request, opts...)
 }
-
-// https://210.126.27.111/api/admin/servers/872/ipv4
