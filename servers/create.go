@@ -78,7 +78,7 @@ func (r CreateResp) Err() (err error) { return errors.New(r.Error) }
 // https://www.eolink.com/share/inside/XIPzIs/api/1389881/detail/5779927
 func Create(ctx *dcimsdk.Context, request *CreateReq) (resp CreateResp, err error) {
 	resp0, err0 := dcimsdk.Execute[*CreateReq, CreateResp](ctx, request)
-	if !resp0.Ok() || resp0.Server.Id <= 0 {
+	if !resp0.Ok() || resp0.Error != "" {
 		return CreateResp{Error: resp0.Error}, err0
 	}
 
